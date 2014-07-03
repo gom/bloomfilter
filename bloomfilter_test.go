@@ -1,9 +1,6 @@
 package bloomfilter
 
-import (
-	"math/rand"
-	"testing"
-)
+import "testing"
 
 func TestAddAndCheck(t *testing.T) {
 	bf := New(1000, 3)
@@ -36,23 +33,19 @@ func BenchmarkCheckAndAddSeparated(b *testing.B) {
 	bf := New(10000, 4)
 	s := "foobar"
 
-	b.RunParallel(func(pb *testing.PB) {
-		for pb.Next() {
-			ts := s + string(rand.Intn(10000000))
-			bf.Check(ts)
-			bf.Add(ts)
-		}
-	})
+	for i := 0; i < b.N; i++ {
+		ts := s + string(i)
+		bf.Check(ts)
+		bf.Add(ts)
+	}
 }
 
 func BenchmarkCheckAndAddCombined(b *testing.B) {
 	bf := New(10000, 4)
 	s := "foobar"
 
-	b.RunParallel(func(pb *testing.PB) {
-		for pb.Next() {
-			ts := s + string(rand.Intn(10000000))
-			bf.CheckAndAdd(ts)
-		}
-	})
+	for i := 0; i < b.N; i++ {
+		ts := s + string(i)
+		bf.CheckAndAdd(ts)
+	}
 }
