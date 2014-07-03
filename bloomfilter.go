@@ -1,9 +1,9 @@
 package bloomfilter
 
 import (
-	"crypto/sha1"
 	"fmt"
 	"hash"
+	"hash/fnv"
 	"math"
 	"strconv"
 )
@@ -16,7 +16,7 @@ type BloomFilter struct {
 }
 
 func New(m, k uint) *BloomFilter {
-	return &BloomFilter{m, k, make([]bool, m), sha1.New()}
+	return &BloomFilter{m, k, make([]bool, m), fnv.New64()}
 }
 
 func (bf *BloomFilter) Add(str string) *BloomFilter {
@@ -72,6 +72,6 @@ func (bf *BloomFilter) hash(str string) uint {
 	bf.hasher.Write([]byte(str))
 	sum := fmt.Sprintf("%x", bf.hasher.Sum(nil))
 
-	sub_sum, _ := strconv.ParseUint(sum[:10], 16, 64)
+	sub_sum, _ := strconv.ParseUint(sum, 16, 64)
 	return uint(sub_sum % uint64(bf.m))
 }
