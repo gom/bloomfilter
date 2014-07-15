@@ -29,6 +29,18 @@ func TestFalsePositiveRate(t *testing.T) {
 	}
 }
 
+func TestEstimate(t *testing.T) {
+	n := uint(65536)
+	p := 0.005
+	marging := 0.001
+
+	bf := NewWithEstimate(n, p)
+	rate := bf.FalsePositiveRate(n)
+	if rate < (p-marging) || (p+marging) < rate {
+		t.Errorf("Too small/big estimate: %f", rate)
+	}
+}
+
 func BenchmarkCheckAndAddSeparated(b *testing.B) {
 	bf := New(10000, 4)
 	s := "foobar"

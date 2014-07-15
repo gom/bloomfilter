@@ -19,6 +19,17 @@ func New(m, k uint) *BloomFilter {
 	return &BloomFilter{m, k, make([]bool, m), fnv.New64()}
 }
 
+func NewWithEstimate(n uint, p float64) *BloomFilter {
+	m, k := estimate(n, p)
+	return New(m, k)
+}
+
+func estimate(n uint, p float64) (uint, uint) {
+	m := -1 * (float64(n) * math.Log(p) / math.Pow(math.Log(2), 2))
+	k := math.Ceil((float64(m) / float64(n)) * math.Log(2))
+	return uint(m), uint(k)
+}
+
 func (bf *BloomFilter) Add(str string) *BloomFilter {
 	for _, h := range bf.hashes(str) {
 		bf.bits[h] = true
