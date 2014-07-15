@@ -5,12 +5,15 @@ go:
 - 1.2
 - 1.3
 - tip
+
 script: make
+
 deploy:
   provider: releases
   api_key:
     secure: Savw4wwRYxfF5bZIfW0+kzldv3xh+VEWZ5nkt7wDfSvnS2/4BRXzjm2ILhQMYu09Xg/Gg8YT7IXEB3g6LxMwgi71QuxzBSJFA3ayB/JLKD9B/uucazo8QUexXRNwuAT7VhBzwy+gEG44VFsjisWY7bUNenTBZ8Nb7QxBKrzcqzc=
   file: filter_sample
+  skip_cleanup: true
+  all_branches: true
   on:
-    repo: gom/bloomfilter
-    branch: binary_build
+    tags: true
