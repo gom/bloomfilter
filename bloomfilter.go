@@ -11,12 +11,12 @@ import (
 type BloomFilter struct {
 	m      uint
 	k      uint
-	bits   []bool
+	bits   *BitArray
 	hasher hash.Hash
 }
 
 func New(m, k uint) *BloomFilter {
-	return &BloomFilter{m, k, make([]bool, m), fnv.New64()}
+	return &BloomFilter{m, k, NewBitArray(m), fnv.New64()}
 }
 
 func NewWithEstimate(n uint, p float64) *BloomFilter {
@@ -32,14 +32,14 @@ func estimate(n uint, p float64) (uint, uint) {
 
 func (bf *BloomFilter) Add(str string) *BloomFilter {
 	for _, h := range bf.hashes(str) {
-		bf.bits[h] = true
+		bf.bits.Set(h)
 	}
 	return bf
 }
 
 func (bf *BloomFilter) Check(str string) bool {
 	for _, h := range bf.hashes(str) {
-		if !bf.bits[h] {
+		if !bf.bits.Has(h) {
 			return false
 		}
 	}
@@ -49,16 +49,16 @@ func (bf *BloomFilter) Check(str string) bool {
 func (bf *BloomFilter) CheckAndAdd(str string) bool {
 	result := true
 	for _, h := range bf.hashes(str) {
-		if !bf.bits[h] {
+		if !bf.bits.Has(h) {
 			result = false
-			bf.bits[h] = true
+			bf.bits.Set(h)
 		}
 	}
 	return result
 }
 
 func (bf *BloomFilter) Clear() *BloomFilter {
-	bf.bits = make([]bool, bf.m)
+	bf.bits = NewBitArray(bf.m)
 	bf.hasher.Reset()
 	return bf
 }

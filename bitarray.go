@@ -10,7 +10,7 @@ const (
 	baseBit    uint64 = 1
 )
 
-func NewB(length uint) *BitArray {
+func NewBitArray(length uint) *BitArray {
 	return &BitArray{make([]uint64, box_pos(length)+1), length}
 }
 
