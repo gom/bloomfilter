@@ -12,11 +12,31 @@ func TestAddAndCheck(t *testing.T) {
 	bf.Add(s1).Add(s2).CheckAndAdd(s3)
 	for _, s := range []string{s1, s2, s3} {
 		if !bf.Check(s) {
-			t.Errorf("%s shourd be in.", s)
+			t.Errorf("%s should be in.", s)
 		}
 	}
 	if bf.Check(s4) {
-		t.Errorf("%s shourd not be in.", s4)
+		t.Errorf("%s should not be in.", s4)
+	}
+
+	bf.Clear()
+	if bf.Check(s1) {
+		t.Errorf("%s should not be in.", s1)
+	}
+}
+
+func TestClear(t *testing.T) {
+	bf := New(1000, 3)
+	s := "Anderson"
+
+	bf.Add(s)
+	if !bf.Check(s) {
+		t.Errorf("%s should be in", s)
+	}
+
+	bf.Clear()
+	if bf.Check(s) {
+		t.Errorf("%s should not be in", s)
 	}
 }
 

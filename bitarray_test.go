@@ -3,7 +3,11 @@ package bloomfilter
 import "testing"
 
 func TestBasic(t *testing.T) {
-	b := NewBitArray(uint(63))
+	var l uint = 63
+	b := NewBitArray(l)
+	if b.Len() != l {
+		t.Errorf("Len should be ", l)
+	}
 
 	v := uint(37)
 	if b.Has(v) {
@@ -40,5 +44,21 @@ func TestBorderValues(t *testing.T) {
 		if b.Has(v) {
 			t.Errorf("%s should not be in", v)
 		}
+	}
+}
+
+func TestInvalidValues(t *testing.T) {
+	var l uint = 63
+	b := NewBitArray(l)
+
+	v := l + 1
+	b.Set(v)
+	if b.Has(v) {
+		t.Errorf("%s should not be in", v)
+	}
+
+	b.Delete(v)
+	if b.Has(v) {
+		t.Errorf("%s should not be in", v)
 	}
 }
